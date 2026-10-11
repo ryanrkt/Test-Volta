@@ -46,9 +46,10 @@ public class MyController {
         return mv;
     }
 
+    // TEST DU SPRINT-007
     @UrlMapping (value = "/emp/save",methodHttp = "POST")
     public ModelAndView ajouterEmploye(String nom,String prenom,String departement){
-        System.out.println("Debug -> nom: " + nom + ", prenom: " + prenom + ", dpt: " + departement);
+        System.out.println(" -> nom: " + nom + ", prenom: " + prenom + ", dpt: " + departement);
         ModelAndView mv = new ModelAndView();
         mv.addAttribute("nom",nom);
         mv.addAttribute("prenom", prenom);
