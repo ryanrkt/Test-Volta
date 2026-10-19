@@ -14,6 +14,7 @@ CYAN='\033[0;36m'
 APP_NAME=$(basename "$(pwd)")
 SRC_DIR="src/main/java"  
 WEB_DIR="src/main/webapp"
+RES_DIR="src/main/resources" # 🟢 Ajout du dossier des ressources
 BUILD_DIR="build"
 LIB_DIR="lib"  
 TOMCAT_WEBAPPS="/opt/tomcat/webapps"
@@ -59,14 +60,21 @@ for jar in "$LIB_DIR"/*.jar; do
 done
 sleep 1
 
-# 5. 🟢 NOUVELLE ETAPE : Compilation de tes contrôleurs d'application !
+# 5. 🟢 COPIE DES RESSOURCES (volta.properties, etc.) vers WEB-INF/classes/
+echo -e "\n${BLEU} 📂 Copie des fichiers de configuration (Resources)...${NC}"
+if [ -d "$RES_DIR" ] && [ "$(ls -A $RES_DIR)" ]; then
+    cp -r "$RES_DIR"/* "$BUILD_DIR/WEB-INF/classes/"
+    echo -e "${VERT} -> Fichiers de configuration copiés dans WEB-INF/classes/.${NC}"
+else
+    echo -e "${JAUNE}⚠️ Attention : Le dossier $RES_DIR est vide ou inexistant.${NC}"
+fi
+sleep 1
+
+# 6. Compilation de tes contrôleurs d'application !
 echo -e "\n${BLEU} ⚙️ Compilation des fichiers Java de l'application...${NC}"
-# On cherche tous les .java dans src/main/java de ton application de test
 find "$SRC_DIR" -name "*.java" > sources.txt
 
 if [ -s sources.txt ]; then
-    # On compile en utilisant les JARs présents dans ton dossier lib (dont volta-mvc.jar)
-    # Et on envoie le résultat directement dans WEB-INF/classes/
     javac -parameters -cp "$LIB_DIR/*" -d "$BUILD_DIR/WEB-INF/classes" @sources.txt
     echo -e "${VERT} -> Compilation terminée. Classes injectées dans WEB-INF/classes/.${NC}"
 else
@@ -75,14 +83,14 @@ fi
 rm -f sources.txt
 sleep 1
 
-# 6. Création du livrable
+# 7. Création du livrable
 echo -e "\n${BLEU} Création du livrable $APP_NAME.war...${NC}"
 cd "$BUILD_DIR"
 jar -cvf "../$APP_NAME.war" . > /dev/null
 cd ..
 sleep 1
 
-# 7. Expédition vers Tomcat
+# 8. Expédition vers Tomcat
 echo -e "\n${BLEU} Expédition vers Tomcat & Redémarrage...${NC}"
 cp -f "$APP_NAME.war" "$TOMCAT_WEBAPPS/"
 rm -f "$APP_NAME.war" 

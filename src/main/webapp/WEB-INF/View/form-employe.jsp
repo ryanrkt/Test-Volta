@@ -7,7 +7,7 @@
 <body>
     <h2>Formulaire d'ajout d'employé</h2>
 
-    <form action="${pageContext.request.contextPath}/emp/save" method="POST">
+    <form action="${pageContext.request.contextPath}/emp/save" method="POST" enctype="multipart/form-data">
         <div>
             <label for="nom">Nom :</label>
             <input type="text" id="nom" name="nom" required />
@@ -21,6 +21,11 @@
         <div>
             <label for="departement">Département :</label>
             <input type="text" id="departement" name="departement" required />
+        </div>
+        <br/>
+        <div>
+            <label for="profile">Photo de profil :</label>
+            <input type="file" id="profile" name="profile" />
         </div>
         <br/>
         <button type="submit">Enregistrer</button>
